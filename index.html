@@ -92,14 +92,39 @@
   .bar > i{display:block; height:100%; width:0%}
   .bar.rate  > i{ width:78%; background:linear-gradient(90deg,var(--accent), #baf7e1)}
   .bar.cap   > i{ width:15%; background:#56d6c1}
+  /* Close button improvements */
+  .close-x{
+    position:absolute; top:12px; right:12px; width:32px; height:32px; 
+    border:1px solid var(--ring); background:rgba(255,255,255,.03); color:var(--dim);
+    border-radius:8px; cursor:pointer; font-size:18px; display:grid; place-items:center;
+    transition: all .2s ease; z-index:10;
+  }
+  .close-x:hover, .close-x:focus{
+    border-color:var(--accent); background:var(--halo); color:var(--accent);
+    transform:scale(1.05);
+  }
   .foot{
     display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; color:var(--dim); font-size:12px
   }
   .btn{
-    border:1px solid var(--ring); background:transparent; color:var(--ink); padding:8px 12px; border-radius:10px;
-    cursor:pointer; font-size:13px;
+    border:1px solid var(--accent); background:var(--accent); color:var(--bg); padding:10px 20px; border-radius:10px;
+    cursor:pointer; font-size:13px; font-weight:500; min-width:80px;
+    transition: all .2s ease;
   }
-  .btn:hover{ border-color:var(--accent); box-shadow: 0 0 0 4px rgba(138,245,208,.10) }
+  .btn:hover, .btn:focus{ 
+    background:transparent; color:var(--accent); box-shadow: 0 0 0 4px rgba(138,245,208,.15);
+    transform:translateY(-1px);
+  }
+  .btn:active{ transform:translateY(0); }
+  
+  /* Mobile tap targets */
+  @media (max-width:720px){ 
+    .row{grid-template-columns:1fr} 
+    .node{--size:74px}
+    .close-x{ width:40px; height:40px; top:8px; right:8px; font-size:20px; }
+    .btn{ padding:12px 24px; font-size:14px; min-width:100px; }
+    .card{ padding:16px 12px 20px; }
+  }
   @media (max-width:720px){ .row{grid-template-columns:1fr} .node{--size:74px} }
 </style>
 </head>
@@ -137,6 +162,7 @@
   <!-- Island (detail) -->
   <dialog class="island" id="island" aria-labelledby="island-title">
     <section class="card" role="document">
+      <button class="close-x" id="close-x" aria-label="Close dialog">×</button>
       <header class="h">
         <span class="pill" id="island-pill">θ</span>
         <h1 id="island-title">Baseline / Tension</h1>
@@ -147,7 +173,7 @@
       </div>
 
       <div class="foot">
-        <span id="island-footnote">Press Esc or Close.</span>
+        <span id="island-footnote">Tap outside, Esc, ×, or Close to exit</span>
         <button class="btn" id="close">Close</button>
       </div>
     </section>
@@ -278,6 +304,7 @@
   const body = document.getElementById('island-body');
   const footnote = document.getElementById('island-footnote');
   const closeBtn = document.getElementById('close');
+  const closeX = document.getElementById('close-x');
 
   function renderIsland(key){
     const d = DATA[key];
@@ -319,8 +346,12 @@
   // Close handlers
   function closeIsland(){ if(island.open) island.close(); }
   closeBtn.addEventListener('click', closeIsland);
+  closeX.addEventListener('click', closeIsland);
   island.addEventListener('click', (e)=>{ if(e.target === island) closeIsland(); });
   window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeIsland(); });
+  
+  // Touch-friendly backdrop close
+  island.addEventListener('touchstart', (e)=>{ if(e.target === island) closeIsland(); });
 
   // Optional: open θ on load so the ripple is "visible"
   // renderIsland('theta');

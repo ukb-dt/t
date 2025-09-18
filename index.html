@@ -6,7 +6,7 @@
 <title>Pentad — ultra-minimal</title>
 <style>
   :root{
-    --bg:#0a0b0f; --ink:#e8e9ea; --dim:#9aa0a6; --line:#1a1d23; --accent:#8af5d0;
+    --bg:#0a0b0f; --ink:#f1f3f4; --dim:#c9cdd2; --line:#1a1d23; --accent:#8af5d0;
     --halo:rgba(138,245,208,.12); --island:#10131a; --ring:#293040;
   }
   html,body{height:100%}
@@ -45,8 +45,8 @@
     box-shadow: 0 10px 28px rgba(0,0,0,.35), 0 0 0 6px rgba(138,245,208,.12);
     transform: translateY(-2px);
   }
-  .node .k{font-size:18px; letter-spacing:.08em; color:var(--accent)}
-  .node .t{font-size:11px; color:var(--dim)}
+  .node .k{font-size:18px; letter-spacing:.08em; color:var(--accent); font-weight:500}
+  .node .t{font-size:11px; color:var(--dim); font-weight:400}
   /* Clock positions */
   .pos-12{ top:7%; left:50%; transform:translate(-50%,0) }
   .pos-6 { bottom:7%; left:50%; transform:translate(-50%,0) }
@@ -76,15 +76,16 @@
   .pill{
     border:1px solid var(--ring); color:var(--ink); border-radius:999px; padding:4px 10px; font-size:11px;
   }
-  h1{font-size:16px; margin:0}
+  h1{font-size:16px; margin:0; color:var(--ink)}
   h2{font-size:13px; color:var(--dim); margin:16px 0 8px}
   ul{margin:0 0 8px 18px; padding:0}
-  li{margin:4px 0}
+  li{margin:4px 0; color:var(--ink)}
   .kv{
     display:grid; grid-template-columns:1fr auto; gap:8px; font-variant-numeric:tabular-nums; font-size:13px;
     padding:10px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02)
   }
   .kv div:nth-child(odd){ color:var(--dim) }
+  .kv div:nth-child(even){ color:var(--ink) }
   .bar{
     height:8px; background:#121620; border:1px solid var(--line); border-radius:999px; overflow:hidden;
   }
@@ -153,7 +154,7 @@
   </dialog>
 
 <script>
-  // Data model (numbers are intentionally illustrative / “made-up but coherent”)
+  // Data model (numbers are intentionally illustrative / "made-up but coherent")
   const DATA = {
     theta: {
       pill: "θ",
@@ -162,7 +163,7 @@
       left: {
         heading: "Aphorism",
         bullets: [
-          "Pace exceeds system’s carrying capacity.",
+          "Pace exceeds system's carrying capacity.",
           "Chaos = overshoot of adjudicative bandwidth."
         ]
       },
@@ -211,7 +212,7 @@
         heading: "Aphorism",
         bullets: [
           "Some nodes bend, bedrock does not.",
-          "Theatrics can’t erase ontology."
+          "Theatrics can't erase ontology."
         ]
       },
       right: {
@@ -321,7 +322,7 @@
   island.addEventListener('click', (e)=>{ if(e.target === island) closeIsland(); });
   window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeIsland(); });
 
-  // Optional: open θ on load so the ripple is “visible”
+  // Optional: open θ on load so the ripple is "visible"
   // renderIsland('theta');
 </script>
 </body>

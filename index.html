@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pentad — ultra-minimal</title>
+<style>
+  :root{
+    --bg:#0a0b0f; --ink:#e8e9ea; --dim:#9aa0a6; --line:#1a1d23; --accent:#8af5d0;
+    --halo:rgba(138,245,208,.12); --island:#10131a; --ring:#293040;
+  }
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:14px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
+    display:grid; place-items:center;
+  }
+  /* Stage */
+  .frame{
+    position:relative; width:min(900px, 92vw); height:min(680px, 86vh);
+    background:linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,0)) ;
+    border:1px solid var(--line); border-radius:20px; overflow:hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .grid{
+    position:absolute; inset:0; display:grid; place-items:center;
+  }
+  .ring{
+    position:absolute; inset:10% 6%; border-radius:999px; pointer-events:none;
+    border:1px dashed var(--ring);
+  }
+  /* Nodes */
+  .node{
+    --size: 86px;
+    position:absolute; width:var(--size); height:var(--size); border-radius:50%;
+    display:grid; place-items:center; color:var(--ink);
+    border:1px solid var(--line); background:rgba(255,255,255,.02);
+    box-shadow: 0 8px 24px rgba(0,0,0,.25), 0 0 0 0 rgba(138,245,208,0);
+    transform: translateZ(0);
+    transition: box-shadow .25s ease, transform .2s ease, background .2s ease, border-color .2s ease;
+    cursor:pointer; outline:none;
+  }
+  .node:hover, .node:focus-visible{
+    background:var(--halo); border-color:var(--accent);
+    box-shadow: 0 10px 28px rgba(0,0,0,.35), 0 0 0 6px rgba(138,245,208,.12);
+    transform: translateY(-2px);
+  }
+  .node .k{font-size:18px; letter-spacing:.08em; color:var(--accent)}
+  .node .t{font-size:11px; color:var(--dim)}
+  /* Clock positions */
+  .pos-12{ top:7%; left:50%; transform:translate(-50%,0) }
+  .pos-6 { bottom:7%; left:50%; transform:translate(-50%,0) }
+  .pos-3 { top:50%; right:6%; transform:translate(0,-50%) }
+  .pos-9 { top:50%; left:6%; transform:translate(0,-50%) }
+  .pos-c { top:50%; left:50%; transform:translate(-50%,-50%) }
+  /* Title minimal */
+  .cap{
+    position:absolute; top:16px; left:18px; right:18px; display:flex; align-items:center; gap:10px;
+    color:var(--dim); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.9}
+  /* Island (detail page) */
+  dialog.island{
+    position:fixed; inset:0; border:none; padding:0; margin:0; background:transparent;
+    display:grid; place-items:center;
+  }
+  dialog::backdrop{ background:rgba(4,6,10,.6); backdrop-filter:saturate(120%) blur(6px) }
+  .card{
+    width:min(820px, 92vw); max-height:86vh; overflow:auto;
+    background:var(--island); border:1px solid var(--line); border-radius:18px;
+    box-shadow: 0 14px 60px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.02);
+    padding:20px 18px 16px;
+  }
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .h{display:flex; align-items:center; gap:10px; margin:2px 0 10px}
+  .pill{
+    border:1px solid var(--ring); color:var(--ink); border-radius:999px; padding:4px 10px; font-size:11px;
+  }
+  h1{font-size:16px; margin:0}
+  h2{font-size:13px; color:var(--dim); margin:16px 0 8px}
+  ul{margin:0 0 8px 18px; padding:0}
+  li{margin:4px 0}
+  .kv{
+    display:grid; grid-template-columns:1fr auto; gap:8px; font-variant-numeric:tabular-nums; font-size:13px;
+    padding:10px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02)
+  }
+  .kv div:nth-child(odd){ color:var(--dim) }
+  .bar{
+    height:8px; background:#121620; border:1px solid var(--line); border-radius:999px; overflow:hidden;
+  }
+  .bar > i{display:block; height:100%; width:0%}
+  .bar.rate  > i{ width:78%; background:linear-gradient(90deg,var(--accent), #baf7e1)}
+  .bar.cap   > i{ width:15%; background:#56d6c1}
+  .foot{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; color:var(--dim); font-size:12px
+  }
+  .btn{
+    border:1px solid var(--ring); background:transparent; color:var(--ink); padding:8px 12px; border-radius:10px;
+    cursor:pointer; font-size:13px;
+  }
+  .btn:hover{ border-color:var(--accent); box-shadow: 0 0 0 4px rgba(138,245,208,.10) }
+  @media (max-width:720px){ .row{grid-template-columns:1fr} .node{--size:74px} }
+</style>
+</head>
+<body>
+  <main class="frame" role="region" aria-label="Pentad clock">
+    <div class="cap"><span class="dot" aria-hidden="true"></span><span>Pentad · 6 · 9 · 12 · Center · 3</span></div>
+    <div class="grid" aria-hidden="true"><div class="ring"></div></div>
+
+    <!-- 12 — h(t) -->
+    <button class="node pos-12" data-key="ht" aria-label="12 — h(t) · Arena">
+      <div class="k">12</div><div class="t">h(t)</div>
+    </button>
+
+    <!-- 9 — Σ -->
+    <button class="node pos-9" data-key="sigma" aria-label="9 — Σ · Delay Function">
+      <div class="k">9</div><div class="t">Σ</div>
+    </button>
+
+    <!-- Center — ΔS -->
+    <button class="node pos-c" data-key="deltaS" aria-label="Center — ΔS · Ledger">
+      <div class="k">●</div><div class="t">ΔS</div>
+    </button>
+
+    <!-- 3 — θ′ -->
+    <button class="node pos-3" data-key="thetaP" aria-label="3 — θ′ · Update">
+      <div class="k">3</div><div class="t">θ′</div>
+    </button>
+
+    <!-- 6 — θ -->
+    <button class="node pos-6" data-key="theta" aria-label="6 — θ · Baseline">
+      <div class="k">6</div><div class="t">θ</div>
+    </button>
+  </main>
+
+  <!-- Island (detail) -->
+  <dialog class="island" id="island" aria-labelledby="island-title">
+    <section class="card" role="document">
+      <header class="h">
+        <span class="pill" id="island-pill">θ</span>
+        <h1 id="island-title">Baseline / Tension</h1>
+      </header>
+
+      <div id="island-body">
+        <!-- dynamic content goes here -->
+      </div>
+
+      <div class="foot">
+        <span id="island-footnote">Press Esc or Close.</span>
+        <button class="btn" id="close">Close</button>
+      </div>
+    </section>
+  </dialog>
+
+<script>
+  // Data model (numbers are intentionally illustrative / “made-up but coherent”)
+  const DATA = {
+    theta: {
+      pill: "θ",
+      title: "Baseline / Tension",
+      subtitle: "Rate > Baseline Volume (estimate)",
+      left: {
+        heading: "Aphorism",
+        bullets: [
+          "Pace exceeds system’s carrying capacity.",
+          "Chaos = overshoot of adjudicative bandwidth."
+        ]
+      },
+      right: {
+        heading: "Key Metrics",
+        kv: [
+          ["EO throughput", "0.78 / day (202 in 260d)"],
+          ["Judicial capacity", "0.15 / day"],
+          ["Overshoot factor", "×5.2"]
+        ],
+        bars: [
+          {label:"Rate", cls:"rate"},
+          {label:"Capacity", cls:"cap"}
+        ]
+      },
+      foot: "Greek dyad @6: Heraclitus ⇄ Parmenides (fire vs. marble)."
+    },
+    sigma: {
+      pill: "Σ",
+      title: "Release / Ritual Framing",
+      subtitle: "Law as Delay Function",
+      left: {
+        heading: "Aphorism",
+        bullets: [
+          "Courts are lag filters; ritualized delay.",
+          "Legal tempo ≠ political tempo."
+        ]
+      },
+      right: {
+        heading: "Tempo Metrics",
+        kv: [
+          ["TRO median", "72 hours"],
+          ["Prelim. injunction", "21 days"],
+          ["Appeal cycle", "≈ 180 days"],
+          ["Enforcement window", "2–6 weeks"]
+        ],
+        bars: []
+      },
+      foot: "Greek @9: Pythagoras ⇄ Aristotle (ratio vs. taxonomy)."
+    },
+    ht: {
+      pill: "h(t)",
+      title: "Soundness / Arena",
+      subtitle: "Anchors = Hard Constraints",
+      left: {
+        heading: "Aphorism",
+        bullets: [
+          "Some nodes bend, bedrock does not.",
+          "Theatrics can’t erase ontology."
+        ]
+      },
+      right: {
+        heading: "Anchor Metrics",
+        kv: [
+          ["14th Amendment challenges", "100+ filed"],
+          ["Govt wins on merits", "0"],
+          ["Bedrock survival", "100%"]
+        ],
+        bars: []
+      },
+      foot: "Greek @12: Sophocles ⇄ Thucydides (tragedy vs. war-time realism)."
+    },
+    deltaS: {
+      pill: "ΔS",
+      title: "Splice / Ledger",
+      subtitle: "Costs = Burn Rate",
+      left: {
+        heading: "Aphorism",
+        bullets: [
+          "Every round burns money, bandwidth, credibility.",
+          "Finite resources bleed into the ledger."
+        ]
+      },
+      right: {
+        heading: "Cost Metrics",
+        kv: [
+          ["DOJ defense spend (6 mo)", "$50M+"],
+          ["Monthly burn", "$8.3M / mo"],
+          ["Staff-years consumed", "~250"]
+        ],
+        bars: []
+      },
+      foot: "Greek @Center: Hippocrates ⇄ Solon (casebook vs. law)."
+    },
+    thetaP: {
+      pill: "θ′",
+      title: "Update / Recurrence",
+      subtitle: "Appeals = Iterations",
+      left: {
+        heading: "Aphorism",
+        bullets: [
+          "Loss ≠ closure; each block mutates.",
+          "Recursion is the policy engine."
+        ]
+      },
+      right: {
+        heading: "Recursion Metrics",
+        kv: [
+          ["Variants per case (avg.)", "2.7"],
+          ["Closure rate", "< 15%"],
+          ["Emergency SCOTUS bids", "≈ 24 to date"]
+        ],
+        bars: []
+      },
+      foot: "Greek @3: Socrates ⇄ Plato (wound vs. script)."
+    }
+  };
+
+  const island = document.getElementById('island');
+  const pill = document.getElementById('island-pill');
+  const title = document.getElementById('island-title');
+  const body = document.getElementById('island-body');
+  const footnote = document.getElementById('island-footnote');
+  const closeBtn = document.getElementById('close');
+
+  function renderIsland(key){
+    const d = DATA[key];
+    pill.textContent = d.pill;
+    title.textContent = d.title;
+    body.innerHTML = `
+      <div class="row">
+        <section>
+          <h2>${d.subtitle}</h2>
+          <h2>${d.left.heading}</h2>
+          <ul>${d.left.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+        </section>
+        <section>
+          <h2>${d.right.heading}</h2>
+          <div class="kv">
+            ${d.right.kv.map(([k,v])=>`<div>${k}</div><div>${v}</div>`).join('')}
+          </div>
+          ${d.right.bars.length ? `
+            <h2 style="margin-top:10px">Throughput vs Capacity</h2>
+            ${d.right.bars.map(b=>`
+              <div class="bar ${b.cls}" aria-label="${b.label}">
+                <i></i>
+              </div>
+            `).join('')}
+          `:''}
+        </section>
+      </div>
+    `;
+    footnote.textContent = d.foot;
+    if(!island.open) island.showModal();
+  }
+
+  // Node bindings
+  document.querySelectorAll('.node').forEach(n=>{
+    n.addEventListener('click', ()=> renderIsland(n.dataset.key));
+    n.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); renderIsland(n.dataset.key); }});
+  });
+
+  // Close handlers
+  function closeIsland(){ if(island.open) island.close(); }
+  closeBtn.addEventListener('click', closeIsland);
+  island.addEventListener('click', (e)=>{ if(e.target === island) closeIsland(); });
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeIsland(); });
+
+  // Optional: open θ on load so the ripple is “visible”
+  // renderIsland('theta');
+</script>
+</body>
+</html>

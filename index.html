@@ -59,18 +59,28 @@
     color:var(--dim); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
   }
   .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.9}
-  /* Island (detail page) */
-  dialog.island{
-    position:fixed; inset:0; border:none; padding:0; margin:0; background:transparent;
-    display:grid; place-items:center;
+  
+  /* Modal - SIMPLE VERSION */
+  .modal{
+    display:none; position:fixed; inset:0; background:rgba(4,6,10,.8); z-index:1000;
+    backdrop-filter:blur(6px);
   }
-  dialog::backdrop{ background:rgba(4,6,10,.6); backdrop-filter:saturate(120%) blur(6px) }
+  .modal.open{ display:flex; align-items:center; justify-content:center; }
+  
   .card{
     width:min(820px, 92vw); max-height:86vh; overflow:auto;
     background:var(--island); border:1px solid var(--line); border-radius:18px;
     box-shadow: 0 14px 60px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.02);
-    padding:20px 18px 16px;
+    padding:20px 18px 16px; position:relative;
   }
+  
+  .close-btn{
+    position:absolute; top:12px; right:12px; width:28px; height:28px;
+    background:var(--accent); color:var(--bg); border:none; border-radius:6px;
+    cursor:pointer; font-size:16px; font-weight:bold; display:flex; align-items:center; justify-content:center;
+  }
+  .close-btn:hover{ opacity:0.8; }
+  
   .row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
   .h{display:flex; align-items:center; gap:10px; margin:2px 0 10px}
   .pill{
@@ -92,39 +102,14 @@
   .bar > i{display:block; height:100%; width:0%}
   .bar.rate  > i{ width:78%; background:linear-gradient(90deg,var(--accent), #baf7e1)}
   .bar.cap   > i{ width:15%; background:#56d6c1}
-  /* Close button improvements */
-  .close-x{
-    position:absolute; top:12px; right:12px; width:32px; height:32px; 
-    border:1px solid var(--ring); background:rgba(255,255,255,.03); color:var(--dim);
-    border-radius:8px; cursor:pointer; font-size:18px; display:grid; place-items:center;
-    transition: all .2s ease; z-index:10;
-  }
-  .close-x:hover, .close-x:focus{
-    border-color:var(--accent); background:var(--halo); color:var(--accent);
-    transform:scale(1.05);
-  }
   .foot{
-    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; color:var(--dim); font-size:12px
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:16px; color:var(--dim); font-size:12px
   }
   .btn{
-    border:1px solid var(--accent); background:var(--accent); color:var(--bg); padding:10px 20px; border-radius:10px;
-    cursor:pointer; font-size:13px; font-weight:500; min-width:80px;
-    transition: all .2s ease;
+    border:1px solid var(--accent); background:var(--accent); color:var(--bg); padding:10px 20px; border-radius:8px;
+    cursor:pointer; font-size:14px; font-weight:500;
   }
-  .btn:hover, .btn:focus{ 
-    background:transparent; color:var(--accent); box-shadow: 0 0 0 4px rgba(138,245,208,.15);
-    transform:translateY(-1px);
-  }
-  .btn:active{ transform:translateY(0); }
-  
-  /* Mobile tap targets */
-  @media (max-width:720px){ 
-    .row{grid-template-columns:1fr} 
-    .node{--size:74px}
-    .close-x{ width:40px; height:40px; top:8px; right:8px; font-size:20px; }
-    .btn{ padding:12px 24px; font-size:14px; min-width:100px; }
-    .card{ padding:16px 12px 20px; }
-  }
+  .btn:hover{ background:var(--bg); color:var(--accent); }
   @media (max-width:720px){ .row{grid-template-columns:1fr} .node{--size:74px} }
 </style>
 </head>
@@ -159,28 +144,23 @@
     </button>
   </main>
 
-  <!-- Island (detail) -->
-  <dialog class="island" id="island" aria-labelledby="island-title">
-    <section class="card" role="document">
-      <button class="close-x" id="close-x" aria-label="Close dialog">×</button>
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="card">
+      <button class="close-btn" id="closeBtn">×</button>
       <header class="h">
-        <span class="pill" id="island-pill">θ</span>
-        <h1 id="island-title">Baseline / Tension</h1>
+        <span class="pill" id="pill">θ</span>
+        <h1 id="title">Baseline / Tension</h1>
       </header>
-
-      <div id="island-body">
-        <!-- dynamic content goes here -->
-      </div>
-
+      <div id="content"></div>
       <div class="foot">
-        <span id="island-footnote">Tap outside, Esc, ×, or Close to exit</span>
-        <button class="btn" id="close">Close</button>
+        <span id="footnote">Click × or outside to close</span>
+        <button class="btn" id="closeBtn2">Close</button>
       </div>
-    </section>
-  </dialog>
+    </div>
+  </div>
 
 <script>
-  // Data model (numbers are intentionally illustrative / "made-up but coherent")
   const DATA = {
     theta: {
       pill: "θ",
@@ -298,19 +278,19 @@
     }
   };
 
-  const island = document.getElementById('island');
-  const pill = document.getElementById('island-pill');
-  const title = document.getElementById('island-title');
-  const body = document.getElementById('island-body');
-  const footnote = document.getElementById('island-footnote');
-  const closeBtn = document.getElementById('close');
-  const closeX = document.getElementById('close-x');
+  const modal = document.getElementById('modal');
+  const pill = document.getElementById('pill');
+  const title = document.getElementById('title');
+  const content = document.getElementById('content');
+  const footnote = document.getElementById('footnote');
+  const closeBtn = document.getElementById('closeBtn');
+  const closeBtn2 = document.getElementById('closeBtn2');
 
-  function renderIsland(key){
+  function openModal(key) {
     const d = DATA[key];
     pill.textContent = d.pill;
     title.textContent = d.title;
-    body.innerHTML = `
+    content.innerHTML = `
       <div class="row">
         <section>
           <h2>${d.subtitle}</h2>
@@ -334,27 +314,27 @@
       </div>
     `;
     footnote.textContent = d.foot;
-    if(!island.open) island.showModal();
+    modal.classList.add('open');
   }
 
-  // Node bindings
-  document.querySelectorAll('.node').forEach(n=>{
-    n.addEventListener('click', ()=> renderIsland(n.dataset.key));
-    n.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); renderIsland(n.dataset.key); }});
+  function closeModal() {
+    modal.classList.remove('open');
+  }
+
+  // Open modal
+  document.querySelectorAll('.node').forEach(node => {
+    node.addEventListener('click', () => openModal(node.dataset.key));
   });
 
-  // Close handlers
-  function closeIsland(){ if(island.open) island.close(); }
-  closeBtn.addEventListener('click', closeIsland);
-  closeX.addEventListener('click', closeIsland);
-  island.addEventListener('click', (e)=>{ if(e.target === island) closeIsland(); });
-  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeIsland(); });
-  
-  // Touch-friendly backdrop close
-  island.addEventListener('touchstart', (e)=>{ if(e.target === island) closeIsland(); });
-
-  // Optional: open θ on load so the ripple is "visible"
-  // renderIsland('theta');
+  // Close modal
+  closeBtn.addEventListener('click', closeModal);
+  closeBtn2.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
 </script>
 </body>
 </html>

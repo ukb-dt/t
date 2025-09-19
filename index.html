@@ -115,32 +115,32 @@
 </head>
 <body>
   <main class="frame" role="region" aria-label="Pentad clock">
-    <div class="cap"><span class="dot" aria-hidden="true"></span><span>Pentad · 6 · 9 · 12 · Center · 3</span></div>
+    <div class="cap"><span class="dot" aria-hidden="true"></span><span>Legal Framework · T · I · S · O · E</span></div>
     <div class="grid" aria-hidden="true"><div class="ring"></div></div>
 
-    <!-- 12 — h(t) -->
-    <button class="node pos-12" data-key="ht" aria-label="12 — h(t) · Arena">
-      <div class="k">12</div><div class="t">h(t)</div>
+    <!-- 6 — θ (Tactic) -->
+    <button class="node pos-6" data-key="theta" aria-label="6 — θ · Tactic">
+      <div class="k">T</div><div class="t">θ</div>
     </button>
 
-    <!-- 9 — Σ -->
-    <button class="node pos-9" data-key="sigma" aria-label="9 — Σ · Delay Function">
-      <div class="k">9</div><div class="t">Σ</div>
+    <!-- 9 — Σ (Information) -->
+    <button class="node pos-9" data-key="sigma" aria-label="9 — Σ · Information">
+      <div class="k">I</div><div class="t">Σ</div>
     </button>
 
-    <!-- Center — ΔS -->
-    <button class="node pos-c" data-key="deltaS" aria-label="Center — ΔS · Ledger">
-      <div class="k">●</div><div class="t">ΔS</div>
+    <!-- 12 — h(t) (Strategy) -->
+    <button class="node pos-12" data-key="ht" aria-label="12 — h(t) · Strategy">
+      <div class="k">S</div><div class="t">h(t)</div>
     </button>
 
-    <!-- 3 — θ′ -->
-    <button class="node pos-3" data-key="thetaP" aria-label="3 — θ′ · Update">
-      <div class="k">3</div><div class="t">θ′</div>
+    <!-- Center — ΔS (Operational) -->
+    <button class="node pos-c" data-key="deltaS" aria-label="Center — ΔS · Operational">
+      <div class="k">O</div><div class="t">ΔS</div>
     </button>
 
-    <!-- 6 — θ -->
-    <button class="node pos-6" data-key="theta" aria-label="6 — θ · Baseline">
-      <div class="k">6</div><div class="t">θ</div>
+    <!-- 3 — θ′ (Existential) -->
+    <button class="node pos-3" data-key="thetaP" aria-label="3 — θ′ · Existential">
+      <div class="k">E</div><div class="t">θ′</div>
     </button>
   </main>
 
@@ -164,117 +164,121 @@
   const DATA = {
     theta: {
       pill: "θ",
-      title: "Baseline / Tension",
-      subtitle: "Rate > Baseline Volume (estimate)",
+      title: "Tactic / Entropy Encoding",
+      subtitle: "Information Warfare in Legal Context",
       left: {
-        heading: "Aphorism",
+        heading: "Strategic Approach",
         bullets: [
-          "Pace exceeds system's carrying capacity.",
-          "Chaos = overshoot of adjudicative bandwidth."
+          "Encode procedural complexity to increase cognitive load",
+          "Deploy information asymmetry as tactical advantage"
         ]
       },
       right: {
-        heading: "Key Metrics",
+        heading: "Tactical Metrics",
         kv: [
-          ["EO throughput", "0.78 / day (202 in 260d)"],
-          ["Judicial capacity", "0.15 / day"],
-          ["Overshoot factor", "×5.2"]
+          ["Filings per case (avg)", "12.3 documents"],
+          ["Pages per filing (avg)", "47 pages"],
+          ["Processing time increase", "+340% vs standard"],
+          ["Opponent response time", "21 days → 45 days"]
         ],
         bars: [
-          {label:"Rate", cls:"rate"},
-          {label:"Capacity", cls:"cap"}
+          {label:"Complexity Rate", cls:"rate"},
+          {label:"Standard Process", cls:"cap"}
         ]
       },
-      foot: "Greek dyad @6: Heraclitus ⇄ Parmenides (fire vs. marble)."
+      foot: "Tactic: Maximize procedural friction through information density."
     },
     sigma: {
       pill: "Σ",
-      title: "Release / Ritual Framing",
-      subtitle: "Law as Delay Function",
+      title: "Information / Negentropy Design",
+      subtitle: "Law as Structured Information System",
       left: {
-        heading: "Aphorism",
+        heading: "Information Theory",
         bullets: [
-          "Courts are lag filters; ritualized delay.",
-          "Legal tempo ≠ political tempo."
+          "Legal negentropy creates predictable delay patterns",
+          "System design favors institutional knowledge holders"
         ]
       },
       right: {
-        heading: "Tempo Metrics",
+        heading: "Information Metrics",
         kv: [
-          ["TRO median", "72 hours"],
-          ["Prelim. injunction", "21 days"],
-          ["Appeal cycle", "≈ 180 days"],
-          ["Enforcement window", "2–6 weeks"]
+          ["Precedent citations (avg)", "127 per brief"],
+          ["Cross-references", "89 per document"],
+          ["Research hours required", "180 hrs/case"],
+          ["Institutional advantage", "8x experience factor"]
         ],
         bars: []
       },
-      foot: "Greek @9: Pythagoras ⇄ Aristotle (ratio vs. taxonomy)."
+      foot: "Information: Negentropy by design creates systematic advantage."
     },
     ht: {
       pill: "h(t)",
-      title: "Soundness / Arena",
-      subtitle: "Anchors = Hard Constraints",
+      title: "Strategy / Supreme Court Appeals",
+      subtitle: "Escalation as Core Strategy",
       left: {
-        heading: "Aphorism",
+        heading: "Appeal Strategy",
         bullets: [
-          "Some nodes bend, bedrock does not.",
-          "Theatrics can't erase ontology."
+          "Every loss becomes grounds for higher court review",
+          "Supreme Court cert petitions as standard practice"
         ]
       },
       right: {
-        heading: "Anchor Metrics",
+        heading: "Appeal Metrics",
         kv: [
-          ["14th Amendment challenges", "100+ filed"],
-          ["Govt wins on merits", "0"],
-          ["Bedrock survival", "100%"]
+          ["Circuit court appeals", "94% of losses"],
+          ["SCOTUS cert petitions", "67% of circuit losses"],
+          ["Success rate (circuit)", "31%"],
+          ["SCOTUS cert rate", "2.8% (vs 1% average)"]
         ],
         bars: []
       },
-      foot: "Greek @12: Sophocles ⇄ Thucydides (tragedy vs. war-time realism)."
+      foot: "Strategy: Systematic appeals extend timeline 18-36 months."
     },
     deltaS: {
       pill: "ΔS",
-      title: "Splice / Ledger",
-      subtitle: "Costs = Burn Rate",
+      title: "Operational / Resource Multiplication",
+      subtitle: "Staffing Increase for Systematic Resistance",
       left: {
-        heading: "Aphorism",
+        heading: "Operational Scaling",
         bullets: [
-          "Every round burns money, bandwidth, credibility.",
-          "Finite resources bleed into the ledger."
+          "250+ additional man-hours per case vs baseline",
+          "Multi-front legal operations to exhaust opposition"
         ]
       },
       right: {
-        heading: "Cost Metrics",
+        heading: "Resource Metrics",
         kv: [
-          ["DOJ defense spend (6 mo)", "$50M+"],
-          ["Monthly burn", "$8.3M / mo"],
-          ["Staff-years consumed", "~250"]
+          ["Additional FTE deployed", "47 lawyers"],
+          ["Hours increase vs baseline", "+250 hrs/case"],
+          ["Parallel case management", "8.2 cases/attorney"],
+          ["Opposition resource strain", "3x normal load"]
         ],
         bars: []
       },
-      foot: "Greek @Center: Hippocrates ⇄ Solon (casebook vs. law)."
+      foot: "Operational: Force multiplication through resource asymmetry."
     },
     thetaP: {
       pill: "θ′",
-      title: "Update / Recurrence",
-      subtitle: "Appeals = Iterations",
+      title: "Existential / Recursive Strategy",
+      subtitle: "Unlimited Federal Resources for Attrition",
       left: {
-        heading: "Aphorism",
+        heading: "Long-term Strategy",
         bullets: [
-          "Loss ≠ closure; each block mutates.",
-          "Recursion is the policy engine."
+          "Federal funding enables indefinite legal warfare",
+          "Recursive annual campaigns to eliminate opposition"
         ]
       },
       right: {
-        heading: "Recursion Metrics",
+        heading: "Attrition Metrics",
         kv: [
-          ["Variants per case (avg.)", "2.7"],
-          ["Closure rate", "< 15%"],
-          ["Emergency SCOTUS bids", "≈ 24 to date"]
+          ["Annual legal budget", "$127M (unlimited)"],
+          ["Opposition funding", "$3.2M (limited)"],
+          ["Resource ratio", "40:1 advantage"],
+          ["Case survival rate", "12% after 3 years"]
         ],
         bars: []
       },
-      foot: "Greek @3: Socrates ⇄ Plato (wound vs. script)."
+      foot: "Existential: Unlimited resources create unsustainable opposition costs."
     }
   };
 
